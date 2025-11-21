@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Manage Books | Library Management</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Manage Books</h1>
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="books.html">Manage Books</a>
+      <a href="overdue.html">Overdue</a>
+      <a href="borrowers.html">Borrowers</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Add New Book -->
+    <section class="panel">
+      <h2>Add New Book</h2>
+      <form id="addBookForm" onsubmit="handleAddBook(event)" style="display: grid; gap: 16px; max-width: 500px;">
+        <div>
+          <label for="bookTitle" style="display: block; margin-bottom: 6px; font-weight: 500;">Book Title</label>
+          <input type="text" id="bookTitle" required placeholder="e.g., The Catcher in the Rye" style="width: 100%;" />
+        </div>
+        <div>
+          <label for="bookAuthor" style="display: block; margin-bottom: 6px; font-weight: 500;">Author</label>
+          <input type="text" id="bookAuthor" required placeholder="e.g., J.D. Salinger" style="width: 100%;" />
+        </div>
+        <div>
+          <label for="bookGenre" style="display: block; margin-bottom: 6px; font-weight: 500;">Genre</label>
+          <input type="text" id="bookGenre" required placeholder="e.g., Fiction, Programming, History" style="width: 100%;" />
+        </div>
+        <button type="submit">Add Book to Library</button>
+      </form>
+    </section>
+
+    <!-- Borrow a Book -->
+    <section class="panel">
+      <h2>Borrow a Book</h2>
+      <p style="color: #666; margin-bottom: 16px;">Select an available book and a borrower to create a new loan record.</p>
+      
+      <form id="borrowBookForm" onsubmit="handleBorrowBook(event)" style="display: grid; gap: 16px; max-width: 500px;">
+        <div>
+          <label for="selectBook" style="display: block; margin-bottom: 6px; font-weight: 500;">Select Book</label>
+          <select id="selectBook" required style="width: 100%;">
+            <option value="">-- Choose a book --</option>
+          </select>
+        </div>
+        <div>
+          <label for="selectBorrower" style="display: block; margin-bottom: 6px; font-weight: 500;">Select Borrower</label>
+          <select id="selectBorrower" required style="width: 100%;">
+            <option value="">-- Choose a borrower --</option>
+          </select>
+        </div>
+        <div>
+          <label for="loanDays" style="display: block; margin-bottom: 6px; font-weight: 500;">Loan Period (days)</label>
+          <input type="number" id="loanDays" value="14" min="1" max="90" style="width: 100%;" />
+        </div>
+        <button type="submit">Borrow Book</button>
+      </form>
+    </section>
+
+    <!-- All Books List -->
+    <section class="panel">
+      <h2>All Books in Library</h2>
+      <div id="allBooksList"></div>
+    </section>
+  </main>
+
+  <footer>
+    <small>Library Management System • Data stored in <code>data/data.json</code> + browser localStorage</small>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // Handle Add Book Form
+    function handleAddBook(event) {
+      event.preventDefault();
+      
+      const title = document.getElementById('bookTitle').value;
+      const author = document.getElementById('bookAuthor').value;
+      const genre = document.getElementById('bookGenre').value;
+      
+      const newBook = addBook(title, author, genre);
+      
+      if (newBook) {
+        alert(`✓ Book added successfully: "${newBook.title}"`);
+        document.getElementById('addBookForm').reset();
+        renderAllBooks();
+        populateBorrowForm();
+      }
+    }
+
+    // Handle Borrow Book Form
+    function handleBorrowBook(event) {
+      event.preventDefault();
+      
+      const bookId = parseInt(document.getElementById('selectBook').value);
+      const borrowerId = parseInt(document.getElementById('selectBorrower').value);
+      const loanDays = parseInt(document.getElementById('loanDays').value);
+      
+      const record = borrowBook(bookId, borrowerId, todayISO(), loanDays);
+      
+      if (record) {
+        const book = window.LIB.books.find(b => b.id === bookId);
+        const borrower = window.LIB.borrowers.find(b => b.id === borrowerId);
+        alert(`✓ Book borrowed successfully!\n\n"${book.title}" by ${borrower.name}\nDue: ${record.due_date}`);
+        document.getElementById('borrowBookForm').reset();
+        document.getElementById('loanDays').value = 14;
+        populateBorrowForm();
+        renderAllBooks();
+      }
+    }
+
+    // Populate borrow form dropdowns
+    function populateBorrowForm() {
+      const bookSelect = document.getElementById('selectBook');
+      const borrowerSelect = document.getElementById('selectBorrower');
+      
+      // Get available books
+      const availableBooks = getAvailableBooks();
+      bookSelect.innerHTML = '<option value="">-- Choose a book --</option>' +
+        availableBooks.map(b => `<option value="${b.id}">${b.title} by ${b.author}</option>`).join('');
+      
+      // Get all borrowers
+      borrowerSelect.innerHTML = '<option value="">-- Choose a borrower --</option>' +
+        window.LIB.borrowers.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+    }
+
+    // Render all books table
+    function renderAllBooks() {
+      const container = document.getElementById('allBooksList');
+      if (!container) return;
+      
+      const borrowedBookIds = window.LIB.records
+        .filter(r => r.return_date === null)
+        .map(r => r.book_id);
+      
+      const rows = window.LIB.books.map(b => {
+        const isBorrowed = borrowedBookIds.includes(b.id);
+        const status = isBorrowed 
+          ? '<span style="color: #666; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">BORROWED</span>'
+          : '<span style="color: #000; background: #e8f5e9; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">AVAILABLE</span>';
+        
+        return `<tr>
+          <td>${b.id}</td>
+          <td><strong>${b.title}</strong></td>
+          <td>${b.author}</td>
+          <td>${b.genre}</td>
+          <td>${status}</td>
+        </tr>`;
+      }).join('');
+      
+      container.innerHTML = `<div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Genre</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+    }
+
+    // Initialize
+    async function initBooksPage() {
+      try {
+        await loadData();
+        populateBorrowForm();
+        renderAllBooks();
+      } catch (e) {
+        console.error('Failed to load data', e);
+        alert('Error loading library data. Please check the console.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initBooksPage);
+  </script>
+</body>
+</html>

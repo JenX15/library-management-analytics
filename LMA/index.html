@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Library Management Analytics</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Library Management Analytics</h1>
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="books.html">Manage Books</a>
+      <a href="overdue.html">Overdue</a>
+      <a href="borrowers.html">Borrowers</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Top Borrowed Books</h2>
+      <div style="height: 400px;">
+        <canvas id="topBooksChart"></canvas>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Search & Filters</h2>
+      <div class="controls">
+        <input id="searchInput" placeholder="Search books or borrowers..." style="flex: 1; min-width: 250px;" />
+        <select id="filterGenre">
+          <option value="">All genres</option>
+        </select>
+        <select id="filterAuthor">
+          <option value="">All authors</option>
+        </select>
+      </div>
+      <div id="searchResults"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Recent Records</h2>
+      <div id="recentRecords"></div>
+    </section>
+  </main>
+
+  <footer>
+    <small>Library Management System • Data stored in <code>data/data.json</code> + browser localStorage</small>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // Initialize UI when page loads
+    document.addEventListener('DOMContentLoaded', initUI);
+  </script>
+</body>
+</html>

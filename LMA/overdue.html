@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Overdue Books | Library Management</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Overdue Books</h1>
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="books.html">Manage Books</a>
+      <a href="overdue.html">Overdue</a>
+      <a href="borrowers.html">Borrowers</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Overdue Books & Borrowers</h2>
+      <p style="color: #666; margin-bottom: 20px;">Books that have passed their due date and have not been returned.</p>
+      <div id="overdueTable"></div>
+    </section>
+  </main>
+
+  <footer>
+    <small>Library Management System • Data stored in <code>data/data.json</code> + browser localStorage</small>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // Initialize UI when page loads
+    document.addEventListener('DOMContentLoaded', initUI);
+  </script>
+</body>
+</html>

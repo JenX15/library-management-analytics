@@ -1,0 +1,120 @@
+{
+  "books": [
+    {
+      "id": 1,
+      "title": "Python Basics",
+      "author": "John Smith",
+      "genre": "Programming"
+    },
+    {
+      "id": 2,
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "genre": "Fiction"
+    },
+    {
+      "id": 3,
+      "title": "Data Science 101",
+      "author": "Jane Doe",
+      "genre": "Data"
+    },
+    {
+      "id": 4,
+      "title": "JavaScript: The Good Parts",
+      "author": "Douglas Crockford",
+      "genre": "Programming"
+    },
+    {
+      "id": 5,
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "genre": "Fiction"
+    }
+  ],
+  "borrowers": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "email": "alice@example.com"
+    },
+    {
+      "id": 2,
+      "name": "Bob Williams",
+      "email": "bob@example.com"
+    },
+    {
+      "id": 3,
+      "name": "Carol Martinez",
+      "email": "carol@example.com"
+    }
+  ],
+  "records": [
+    {
+      "id": 1,
+      "book_id": 1,
+      "borrower_id": 1,
+      "issue_date": "2025-11-01",
+      "due_date": "2025-11-15",
+      "return_date": null
+    },
+    {
+      "id": 2,
+      "book_id": 2,
+      "borrower_id": 2,
+      "issue_date": "2025-10-20",
+      "due_date": "2025-11-03",
+      "return_date": "2025-11-02"
+    },
+    {
+      "id": 3,
+      "book_id": 3,
+      "borrower_id": 1,
+      "issue_date": "2025-11-05",
+      "due_date": "2025-11-19",
+      "return_date": null
+    },
+    {
+      "id": 4,
+      "book_id": 2,
+      "borrower_id": 1,
+      "issue_date": "2025-10-01",
+      "due_date": "2025-10-15",
+      "return_date": "2025-10-14"
+    },
+    {
+      "id": 5,
+      "book_id": 4,
+      "borrower_id": 3,
+      "issue_date": "2025-11-10",
+      "due_date": "2025-11-24",
+      "return_date": null
+    },
+    {
+      "id": 6,
+      "book_id": 2,
+      "borrower_id": 2,
+      "issue_date": "2025-09-15",
+      "due_date": "2025-09-29",
+      "return_date": "2025-09-28"
+    },
+    {
+      "id": 7,
+      "book_id": 5,
+      "borrower_id": 3,
+      "issue_date": "2025-10-25",
+      "due_date": "2025-11-08",
+      "return_date": "2025-11-07"
+    },
+    {
+      "id": 8,
+      "book_id": 1,
+      "borrower_id": 2,
+      "issue_date": "2025-11-12",
+      "due_date": "2025-11-18",
+      "return_date": null
+    }
+  ],
+  "settings": {
+    "default_loan_days": 14
+  }
+}
